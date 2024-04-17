@@ -1,0 +1,31 @@
+#############################
+### BUILD FOR DEVELOPMENT ###
+#############################
+
+FROM node:alpine AS development
+
+LABEL maintainer="Christian De Santis <christiandesantisc@icloud.com>"
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN   apk update \                                                                                                                                                                                                      
+  &&   apk add ca-certificates wget \
+  &&   update-ca-certificates
+
+RUN apk add --update --no-cache python3 build-base gcc && ln -sf /usr/bin/python3 /usr/bin/python
+RUN apk add udev ttf-freefont git
+
+RUN npm install -g npm @nestjs/cli ts-node
+
+# RUN npm install --only=development
+RUN npm ci
+# RUN npm install
+
+RUN npm install glob rimraf
+
+COPY . .
+
+EXPOSE 3000
+EXPOSE 9229
