@@ -1,0 +1,26 @@
+############################
+### BUILD FOR PRODUCTION ###
+############################
+
+FROM node:latest AS build
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Serve the app with Node.js
+FROM node:latest AS server
+WORKDIR /usr/src/app
+COPY --from=build /usr/src/app ./
+RUN npm install --only=production
+EXPOSE 3000
+CMD ["npm", "start"]
+
+# Set up Nginx as a reverse proxy
+FROM nginx:stable-alpine as production
+COPY --from=server /usr/src/app /usr/share/nginx/html
+COPY default.conf.template /etc/nginx/conf.d/default.conf.template
+EXPOSE 80
+EXPOSE 443
+CMD /bin/sh -c "envsubst '\$DOCKER_NGINX_SSL_CERT,\$DOCKER_NGINX_SSL_KEY' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
