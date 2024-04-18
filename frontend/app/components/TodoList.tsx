@@ -8,11 +8,13 @@ interface TodoListProps {
 }
 
 export default function TodoList({ onEdit }: TodoListProps) {
-  const { todos } = useTodos();
-  const { loadTodos, deleteTodo } = useTodoOperations();
+  // Todo Operations Hook & Context
+  const { todos, loadTodos, deleteTodo } = useTodoOperations();
 
+  // Load todos on component mount
   useEffect(() => {
     loadTodos();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

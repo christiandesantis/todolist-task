@@ -8,6 +8,8 @@ import { typeOrmAsyncConfig } from './config/typeorm';
 import { CommandModule } from 'nestjs-command';
 import { CommandService } from './command/command.service';
 import { TodoModule } from './todo/todo.module';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { TodoModule } from './todo/todo.module';
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     CommandModule,
     TodoModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, CommandService],

@@ -6,6 +6,11 @@ export default () => ({
   port:
     process.env.NEST_PORT ||
     ((process.env.NODE_ENV || 'development') === 'production' ? 8443 : 3000),
+  jwt: {
+    secret: process.env.NEST_JWT_SECRET || 'secret123',
+    expiresIn: process.env.NEST_JWT_EXPIRES_IN || '1d',
+    cookieName: process.env.NEST_JWT_COOKIE_NAME || 'todolist-auth',
+  },
   ssl: {
     key: process.env.DOCKER_NGINX_SSL_KEY || '/etc/ssl/private/key.pem',
     cert: process.env.DOCKER_NGINX_SSL_CERT || '/etc/ssl/certs/cert.pem',
@@ -14,11 +19,11 @@ export default () => ({
     dialect: process.env.DB_DIALECT || 'mysql',
     host:
       process.env.DB_HOST ||
-      `${process.env.DOCKER_CONTAINER_PREFIX || 'quasarnest'}_${process.env.DB_DIALECT || 'mysql'}`,
+      `${process.env.DOCKER_CONTAINER_PREFIX || 'todolist'}_${process.env.DB_DIALECT || 'mysql'}`,
     port: process.env.DB_PORT || 3306,
     name:
       process.env.DB_NAME ||
-      `${process.env.DOCKER_CONTAINER_PREFIX || 'quasarnest'}`,
+      `${process.env.DOCKER_CONTAINER_PREFIX || 'todolist'}`,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PSWD || 'root',
   },
@@ -36,17 +41,17 @@ export default () => ({
   redis: {
     host:
       process.env.NEST_REDIS_HOST ||
-      `${process.env.DOCKER_CONTAINER_PREFIX || 'quasarnest'}_redis`,
+      `${process.env.DOCKER_CONTAINER_PREFIX || 'todolist'}_redis`,
     port: process.env.NEST_REDIS_PORT || 6379,
   },
   smtp: {
     host: process.env.NEST_SMTP_HOST || 'smtp.gmail.com',
     port: process.env.NEST_SMTP_PORT || 465,
     secure: process.env.NEST_SMTP_SECURE === 'true' || true,
-    name: process.env.NEST_SMTP_NAME || 'QuasarNest',
+    name: process.env.NEST_SMTP_NAME || 'ExampleApp',
     user:
       process.env.NEST_SMTP_USER ||
-      `${process.env.DOCKER_CONTAINER_PREFIX || 'quasarnest'}@example.com`,
+      `${process.env.DOCKER_CONTAINER_PREFIX || 'todolist'}@example.com`,
     password: process.env.NEST_SMTP_PSWD || '',
   },
   cli: {

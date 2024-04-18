@@ -17,7 +17,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       port: configService.get<number>('database.port') || 3306,
       username: configService.get<string>('database.user') || 'root',
       password: configService.get<string>('database.password') || '',
-      database: configService.get<string>('database.name') || 'quasarnest',
+      database: configService.get<string>('database.name') || 'todolist',
       // entities: entities,
       entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
       migrations: [__dirname + '/../../database/migrations/*{.ts,.js}'],

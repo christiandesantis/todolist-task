@@ -17,7 +17,7 @@ RUN   apk update \
 RUN apk add --update --no-cache python3 build-base gcc && ln -sf /usr/bin/python3 /usr/bin/python
 RUN apk add udev ttf-freefont git
 
-RUN npm install -g npm @nestjs/cli ts-node
+RUN npm install -g npm ts-node
 
 # RUN npm install --only=development
 RUN npm ci

@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult, FindOneOptions } from 'typeorm';
-import { Todo, TodoDto } from '../todo.entity';
+import {
+  Repository,
+  DeleteResult,
+  FindOneOptions,
+  FindManyOptions,
+} from 'typeorm';
+import { Todo } from '../todo.entity';
+import { TodoDto } from '../dto/todo.dto';
 
 @Injectable()
 export class TodoService {
@@ -19,8 +25,8 @@ export class TodoService {
     return this.todoRepository.findOne(options);
   }
 
-  async findAll(): Promise<Todo[]> {
-    return this.todoRepository.find();
+  async findAll(options?: FindManyOptions<Todo>): Promise<Todo[]> {
+    return this.todoRepository.find(options);
   }
 
   async update(id: number, data: TodoDto): Promise<Todo> {
@@ -31,5 +37,4 @@ export class TodoService {
   async remove(id: number): Promise<DeleteResult> {
     return this.todoRepository.delete(id);
   }
-
 }

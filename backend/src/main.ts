@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   dotenv.config();
@@ -24,10 +25,18 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, options);
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
   app.use(cookieParser());
 
   app.enableCors({
-    origin: configService.get<string>('cors.origin'),
+    origin: configService.get<string>('cors.origin').split(','),
     credentials: true,
   });
 

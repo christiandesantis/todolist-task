@@ -2,35 +2,36 @@ import {
   Body,
   Controller,
   Get,
-  Logger,
   Param,
   Post,
   Delete,
-  // Req,
-  // UnauthorizedException,
+  Request,
   NotFoundException,
   Put,
   BadRequestException,
 } from '@nestjs/common';
-// import { Request } from 'express';
 import { TodoService } from '../service/todo.service';
-import { TodoDto } from '../todo.entity';
+import { TodoDto } from '../dto/todo.dto';
 
 @Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
-  private readonly logger = new Logger(TodoController.name);
-
   @Get()
-  async findAll() {
-    this.logger.debug('Fetching all todos');
-    return await this.todoService.findAll();
+  async findAll(@Request() req) {
+    if (!req.user.id) throw new BadRequestException();
+    return await this.todoService.findAll({
+      where: { user_id: req.user.id },
+      order: { id: 'DESC' },
+    });
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const todo = await this.todoService.findOne({ where: { id } });
+  async findOne(@Param('id') id: number, @Request() req) {
+    if (!req.user.id) throw new BadRequestException();
+    const todo = await this.todoService.findOne({
+      where: { id, user_id: req.user.id },
+    });
     if (!todo) {
       throw new NotFoundException(`Todo with id ${id} not found`);
     }
@@ -38,12 +39,11 @@ export class TodoController {
   }
 
   @Post()
-  async create(@Body() body: TodoDto) {
-    this.logger.debug(body);
+  async create(@Request() req, @Body() body: TodoDto) {
     if (!body.title) {
       throw new BadRequestException('Title is required');
     }
-    return await this.todoService.create(body);
+    return await this.todoService.create({ ...body, user_id: req.user.id });
   }
 
   @Put(':id')
